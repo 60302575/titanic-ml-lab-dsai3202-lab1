@@ -1,4 +1,4 @@
-name: titanic-ml-env
+name: titanic-prod
 channels:
   - defaults
 dependencies:
