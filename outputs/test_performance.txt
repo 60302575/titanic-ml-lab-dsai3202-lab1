@@ -1,0 +1,28 @@
+TITANIC ML MODEL - TEST PERFORMANCE METRICS
+==================================================
+Generated on: 2026-01-24 19:57:48
+
+Accuracy:  0.8684
+Precision: 0.8345
+Recall:    0.7961
+F1-Score:  0.8148
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.89      0.91      0.90       266
+           1       0.83      0.80      0.81       152
+
+    accuracy                           0.87       418
+   macro avg       0.86      0.85      0.86       418
+weighted avg       0.87      0.87      0.87       418
+
+Confusion Matrix:
+[[242  24]
+ [ 31 121]]
+
+Detailed Metrics:
+True Positives:  121
+True Negatives:  242
+False Positives: 24
+False Negatives: 31
