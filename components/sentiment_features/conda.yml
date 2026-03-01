@@ -1,0 +1,9 @@
+name: sentiment_env
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - pip:
+    - nltk
+    - pandas
+    - pyarrow

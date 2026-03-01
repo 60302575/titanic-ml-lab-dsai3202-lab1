@@ -1,0 +1,23 @@
+source:
+  type: parquet
+  path: azureml://datastores/workspaceblobstore/paths/azureml/d3480f50-6f8f-4be0-93c0-da311902b84b/out/
+  timestamp_column:
+    name: reviewTime
+index_columns:
+  - name: asin
+    type: string
+  - name: reviewerID
+    type: string
+features:
+  - name: review_length_words
+    type: integer
+  - name: review_length_chars
+    type: integer
+  - name: sentiment_pos
+    type: float
+  - name: sentiment_neg
+    type: float
+  - name: sentiment_neu
+    type: float
+  - name: sentiment_compound
+    type: float

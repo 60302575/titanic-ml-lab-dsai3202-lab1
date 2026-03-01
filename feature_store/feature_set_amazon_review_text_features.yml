@@ -1,0 +1,8 @@
+$schema: https://azuremlschemas.azureedge.net/latest/featureset.schema.json
+name: amazon_review_text_features
+version: "1"
+description: Text features for Amazon Electronics reviews
+entities:
+  - azureml:AmazonReview:1
+specification:
+  path: ./
