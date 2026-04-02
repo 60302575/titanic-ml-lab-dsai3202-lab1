@@ -22,6 +22,10 @@ def main():
     tfidf_df     = pd.read_parquet(args.tfidf)
     sbert_df     = pd.read_parquet(args.sbert)
 
+    for df in [sentiment_df, tfidf_df, sbert_df]:
+        if "overall" in df.columns:
+            df.drop(columns=["overall"], inplace=True)
+
     merged = (
         length_df
         .merge(sentiment_df, on=keys, how="inner")
@@ -29,13 +33,15 @@ def main():
         .merge(sbert_df,     on=keys, how="inner")
     )
 
+    print("Merged columns:", merged.columns.tolist()[:10])
+    print("Merged shape:", merged.shape)
+
     if "overall" not in merged.columns:
-        raise RuntimeError("'overall' column missing after merge. Check length.py.")
+        raise RuntimeError(f"'overall' missing. Columns: {merged.columns.tolist()}")
 
     os.makedirs(args.out, exist_ok=True)
     merged.to_parquet(os.path.join(args.out, "data.parquet"), index=False)
-    print("Merged shape:", merged.shape)
-    print("Columns:", merged.columns.tolist())
+    print("Done.")
 
 
 if __name__ == "__main__":
