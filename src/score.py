@@ -10,38 +10,53 @@ feature_meta = None
 def init():
     global model, feature_meta
     model_dir  = os.environ.get("AZUREML_MODEL_DIR", ".")
-    model      = joblib.load(os.path.join(model_dir, "model.pkl"))
-    meta_path  = os.path.join(model_dir, "feature_meta.json")
+    
+    # Find model.pkl
+    model_path = os.path.join(model_dir, "model.pkl")
+    if not os.path.exists(model_path):
+        # Search subdirectories
+        for root, dirs, files in os.walk(model_dir):
+            for f in files:
+                if f == "model.pkl":
+                    model_path = os.path.join(root, f)
+                    break
+    
+    print(f"Loading model from: {model_path}")
+    model = joblib.load(model_path)
+
+    # Find feature_meta.json
+    meta_path = os.path.join(model_dir, "feature_meta.json")
+    if not os.path.exists(meta_path):
+        for root, dirs, files in os.walk(model_dir):
+            for f in files:
+                if f == "feature_meta.json":
+                    meta_path = os.path.join(root, f)
+                    break
+
     if os.path.exists(meta_path):
         with open(meta_path) as f:
             feature_meta = json.load(f)
-    print("Model loaded.")
+        print(f"Feature meta loaded: {list(feature_meta.keys())}")
+    else:
+        print("No feature_meta.json found")
 
-
-def _build_features(data):
-    if "features" in data:
-        return np.array(data["features"], dtype=np.float32)
-    parts = []
-    if feature_meta:
-        for col in feature_meta.get("sbert_cols", []):
-            parts.append(np.array(data[col], dtype=np.float32).reshape(-1, 1))
-        for col in feature_meta.get("tfidf_cols", []):
-            parts.append(np.array(data.get(col, [0.0]), dtype=np.float32).reshape(-1, 1))
-        for col in feature_meta.get("sentiment_cols", []):
-            parts.append(np.array(data.get(col, [0.0]), dtype=np.float32).reshape(-1, 1))
-        for col in feature_meta.get("length_cols", []):
-            parts.append(np.array(data.get(col, [0.0]), dtype=np.float32).reshape(-1, 1))
-    if not parts:
-        raise ValueError("Cannot build features. Send 'features' key with pre-built array.")
-    return np.hstack(parts)
+    print("Model loaded successfully.")
 
 
 def run(raw_data):
     try:
         data  = json.loads(raw_data)
-        X     = _build_features(data)
+        
+        if "features" in data:
+            X = np.array(data["features"], dtype=np.float32)
+        else:
+            return {"error": "Please send data as {'features': [[...], ...]}"}
+
         preds = model.predict(X)
         proba = model.predict_proba(X)[:, 1]
-        return {"predictions": preds.tolist(), "probabilities": proba.tolist()}
+        return {
+            "predictions":   preds.tolist(),
+            "probabilities": proba.tolist()
+        }
     except Exception as e:
         return {"error": str(e)}
