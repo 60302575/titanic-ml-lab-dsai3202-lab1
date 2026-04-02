@@ -9,9 +9,9 @@ command: >
   --val_data   ${{inputs.val_data}}/data.parquet
   --test_data  ${{inputs.test_data}}/data.parquet
   --output     ${{outputs.model_output}}
-  --C          1.0
-  --max_iter   1000
-  --solver     saga
+  --C          9.007
+  --max_iter   500
+  --solver     lbfgs
 inputs:
   train_data:
     type: uri_folder
