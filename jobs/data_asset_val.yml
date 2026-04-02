@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: amazon_review_merged_features_val
+version: 1
+type: uri_folder
+path: <PASTE_DATASTORE_URI_FROM_merge_val_OUTPUT>
+description: Validation split merged features from Lab 4 pipeline
