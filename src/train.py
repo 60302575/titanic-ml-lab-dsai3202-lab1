@@ -132,8 +132,8 @@ def main():
     os.makedirs(args.output, exist_ok=True)
     model_path = os.path.join(args.output, "model.pkl")
     joblib.dump(model, model_path)
-    mlflow.log_artifact(model_path)
 
+    # Save feature metadata
     sbert_cols = sorted([c for c in train_df.columns if c.startswith(SBERT_PREFIX)],
                         key=lambda x: int(x.split("_")[1]))
     meta = {
@@ -145,7 +145,6 @@ def main():
     meta_path = os.path.join(args.output, "feature_meta.json")
     with open(meta_path, "w") as f:
         json.dump(meta, f, indent=2)
-    mlflow.log_artifact(meta_path)
 
     runtime = time.time() - start_time
     mlflow.log_metric("training_runtime_seconds", runtime)
